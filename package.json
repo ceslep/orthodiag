@@ -1,20 +1,27 @@
 {
-  "name": "~TODO~",
+  "name": "orthodiagnosticar",
   "version": "0.0.1",
   "scripts": {
-    "dev": "svelte-kit dev",
+    "dev": "svelte-kit dev --host",
     "build": "svelte-kit build",
     "preview": "svelte-kit preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
+    "@sveltejs/adapter-node": "^1.0.0-next.27",
+    "@sveltejs/adapter-static": "^1.0.0-next.13",
     "@sveltejs/kit": "next",
-    "svelte": "^3.34.0",
+    "svelte": "^3.38.2",
+    "svelte-bootstrap-icons": "^1.5.0",
     "svelte-check": "^2.0.0",
     "svelte-preprocess": "^4.0.0",
     "tslib": "^2.0.0",
     "typescript": "^4.0.0"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "sveltestrap": "^5.2.1",
+    "sweetalert2": "^11.0.18"
+  }
 }

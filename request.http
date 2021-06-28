@@ -1,0 +1,14 @@
+POST http://127.0.0.1/orthodiag/php/login.php
+Content-Type: application/json
+
+{
+    "usuario":"ceslep@gmail.com",
+    "contrasena":"12345"
+}
+###
+POST http://127.0.0.1/orthodiag/php/pacientesProfesional.php
+Content-Type: application/json
+
+{
+    "profesional":"ceslep@gmail.com"
+}
