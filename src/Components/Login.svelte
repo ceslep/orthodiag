@@ -13,24 +13,18 @@
         Input,
     } from "sveltestrap";
 
-   
-   
-
-    import { usuario, session,urlProcessImages } from "../Stores.js";
+    import { usuario, session, urlProcessImages } from "../Stores.js";
     import { onDestroy } from "svelte";
-   
+    import * as api from "$lib/api/apis";
     import { fade } from "svelte/transition";
-
-
+    import { goto } from '$app/navigation';
+    import Swal from "sweetalert2";
     let login = {
         usuario: "",
         contrasena: "",
     };
 
-    
-    const unsubscribe = usuario.subscribe((value) => {
-      
-    });
+    const unsubscribe = usuario.subscribe((value) => {});
 
     let estado;
 
@@ -41,20 +35,15 @@
         unSubscribeSession();
     });
 
+    
+
     const ingresar = async () => {
         console.log($urlProcessImages);
-        let response = await fetch($urlProcessImages+"login.php",{
-            method:"POST",
-            body:JSON.stringify(login),
-            headers:{"Content-Type":"application/json"},
-            mode:"cors"
-        });
-        let msgLogin=await response.json();
-        console.log(msgLogin);
-        msgLogin[0];
-        if (!msgLogin[0].concedido){
-            
-              Swal.fire({
+        const { response, json } = await api.post($urlProcessImages, 'login.php',login);
+         
+       
+        if (!json[0].concedido) {
+            Swal.fire({
                 icon: "error",
                 title: "Acceso denegado",
                 text: "Error!",
@@ -65,11 +54,13 @@
                     popup: "animate__animated animate__fadeOutUp",
                 },
             });
-        }    
-        else {
+        } else {
             session.iniciar(login.usuario);
             $usuario.usuario = login.usuario;
-            location.href=`/dirs/${login.usuario}`;
+            goto(`/dirs/${login.usuario}`).then(()=>{
+               console.log("success:");
+           });
+       
         }
     };
 
@@ -104,8 +95,6 @@
                 />
             </FormGroup>
             <Button block color="primary" on:click={ingresar}>Ingresar</Button>
-            
-            
         </CardBody>
         <CardFooter>&#169;{cpr}</CardFooter>
     </Card>

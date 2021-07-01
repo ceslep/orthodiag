@@ -10,13 +10,13 @@
         ListGroupItem,
     } from "sveltestrap";
     import { urlProcessImages } from "../Stores.js";
-    import { navigate } from "svelte-routing";
+    import {onMount} from "svelte";
 
     export let path;
     export let directorio;
     let open = false;
 
-    let promiseDirectorios:any=[];
+    let directorios;
     let url = `${$urlProcessImages}get_files_a.php`;
 
     const listarDirectorios = async () => {
@@ -27,12 +27,16 @@
             headers: { "Content-Type": "application/json" },
             mode: "cors",
         });
-        promiseDirectorios = await response.json();
+        return await response.json();
     };
 
+    onMount(async ()=>{
+        directorios = await listarDirectorios();
+    });
+
   
-  const verFotos = async (path,directorio:string)=>{
-    navigate(`/verfotos/${encodeURIComponent(path)}/${directorio}`);
+  const verFotos = async (path,directorio)=>{
+  //  navigate(`/verfotos/${encodeURIComponent(path)}/${directorio}`);
   }  
 
   const toggle = () => (open = !open);
@@ -48,13 +52,18 @@
     <ModalBody>
         <ListGroup>
          
-            {#await promiseDirectorios}
-                <Spinner size="md" type="grow" /> 
-            {:then directorios}
+                {#if directorios}
                 {#each directorios as { directorio }, i}
                     <ListGroupItem><a href="#!" on:click|preventDefault={()=>{verFotos(path,directorio)}}>{directorio}</a></ListGroupItem>
                 {/each}
-            {/await}
+                {:else}
+                <Spinner
+                color="primary"
+                type="border"
+                size="lg"
+                style="width: 5rem; height: 5rem;"
+            />
+            {/if}
           
         </ListGroup>
     </ModalBody>

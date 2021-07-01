@@ -21,6 +21,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.3",
+    "node-fetch": "^2.6.1",
     "sveltestrap": "^5.2.1",
     "sweetalert2": "^11.0.18"
   }

@@ -10,7 +10,7 @@ class Progress{
   }
 
   getPorcentajeValue(){
-    return this.porcentaje;
+   // return this.porcentaje;
   }
 
   

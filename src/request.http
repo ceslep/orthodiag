@@ -1,7 +1,0 @@
-POST http://127.0.0.1/odiag/php/get_files.php
-content-Type:application/json
-
-{
-    "cliente":"42759761"
-    
-}

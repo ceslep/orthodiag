@@ -36,7 +36,7 @@
     
     });
 
-   $:console.log($session);
+  
 </script>
 
 <Navbar color="info" light expand="md" class="sticky-top">
