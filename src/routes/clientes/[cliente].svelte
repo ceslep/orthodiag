@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
 	import ListaTotalDirectorios from './../../Components/ListaTotalDirectorios.svelte';
-    import * as api from "$lib/api/apis";
+    
 
     export const load = async ({ page }) => {
         const cliente = page.params.cliente;

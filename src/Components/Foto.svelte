@@ -7,6 +7,7 @@
 
     
     onMount(() => {
+        // @ts-ignore
         panzoom(imgc);
     });
     const volver = () => {

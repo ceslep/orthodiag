@@ -7,17 +7,19 @@
     CardHeader,
     CardTitle,
   } from "sveltestrap";
-
+  import { goto } from '$app/navigation';
   import {onMount} from "svelte";
   import { CloudDownload, CardImage, WindowSidebar } from "svelte-bootstrap-icons";
+  import {imgStore} from "../Stores";
 
   import Swal from "sweetalert2";
-  import { navigate } from "svelte-routing";
+ 
 
   export let src;
+  export let imageFileFull;
 
- let Width:any;
- const height=(width:number):number=>{return Math.round(width*1.5);}
+ let Width;
+ const height=(width)=>{return Math.round(width*1.5);}
   onMount(()=>{
     
     Width=`${window.innerWidth}px`;
@@ -30,10 +32,11 @@
 
   $:console.log(Width);
   const clickImageFull = (src) => {
-    navigate(`/foto/${encodeURIComponent(src)}`);
+    $imgStore=src;
+    goto(`/files/imagenes/`);
   };
 
-  const clickImage = (src: string) => {
+  const clickImage = (src) => {
     Swal.fire({
       html: `<img src=${src} class="img-fluid" alt=''>`,
       showCloseButton: true,
@@ -44,7 +47,7 @@
     });
   };
 
-  let styleWidth:string="";
+  let styleWidth="";
   
 </script>
 
@@ -64,7 +67,7 @@
       ><img class="img-fluid" {src} alt="" />
     </a>
   </CardBody>
-  <CardFooter><Button block>Descargar <CloudDownload /></Button></CardFooter>
+  <CardFooter><div class="d-grid gap-1"><a href="{src}" download="{imageFileFull}" class="btn btn-primary">Descargar <CloudDownload /></a></div></CardFooter>
 </Card>
 
 <style>

@@ -11,9 +11,12 @@
     } from "sveltestrap";
     import { urlProcessImages } from "../Stores.js";
     import {onMount} from "svelte";
+    import { goto } from '$app/navigation';
+    import * as api from "$lib/api/apis";
 
     export let path;
     export let directorio;
+    
     let open = false;
 
     let directorios;
@@ -21,13 +24,8 @@
 
     const listarDirectorios = async () => {
         open=true;
-        let response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({ dir: path }),
-            headers: { "Content-Type": "application/json" },
-            mode: "cors",
-        });
-        return await response.json();
+        let {response,json} = await api.post($urlProcessImages,"get_files_a.php",{ dir: path } );
+        return json;
     };
 
     onMount(async ()=>{
@@ -36,7 +34,7 @@
 
   
   const verFotos = async (path,directorio)=>{
-  //  navigate(`/verfotos/${encodeURIComponent(path)}/${directorio}`);
+    goto(`/files/${encodeURIComponent(path.replaceAll("/","@"))}/${directorio}`);
   }  
 
   const toggle = () => (open = !open);
@@ -45,11 +43,7 @@
 
 </script>
 
-<Button block on:click={listarDirectorios}>{directorio}</Button>
-
-<Modal isOpen={open} {toggle} backdrop={false} fade={false} class="modal-dialog-centered">
-    <ModalHeader {toggle} color="danger">Lista de carpetas del paciente</ModalHeader>
-    <ModalBody>
+    <h2>{directorio}</h2>
         <ListGroup>
          
                 {#if directorios}
@@ -66,8 +60,4 @@
             {/if}
           
         </ListGroup>
-    </ModalBody>
-    <ModalFooter>
-        <Button color="secondary" on:click={toggle}>Cerrar</Button>
-    </ModalFooter>
-</Modal>
+   

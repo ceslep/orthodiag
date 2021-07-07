@@ -1,54 +1,44 @@
 <script lang="ts">
+    import { Spinner } from "sveltestrap";
     import VerFotos from "./VerFotos.svelte";
     import { onMount } from "svelte";
-    import { urlProcessImages,porcentajeStore } from "../Stores.js";
-    import {Progress} from "../Utils.js";
+    import { urlProcessImages, porcentajeStore } from "../Stores.js";
+    import { Progress } from "../Utils.js";
+    import * as api from "$lib/api/apis";
+
+    export let path;
+    export let dir;
+
     
-    import Loading from "./Loading.svelte";
 
-    export let path: string;
-    export let dir: string;
-
-    let url = `${$urlProcessImages}get_files_d.php`;
-
-    let promiseImagenes: any = [];
+    let imagenes;
     const getImagenes = async () => {
-        let response = await fetch(url, {
-            method: "POST",
-            body: JSON.stringify({ path: path, dir: dir }),
-            headers: { "Content-Type": "application/json" },
-            mode: "cors",
-        });
-        let progreso = new Progress(response);
-        return await progreso.progreso();
+        let {response,json} = await api.post($urlProcessImages,"get_files_d.php",{ path, dir });
+        return json;
     };
 
-    onMount(() => {
+    onMount(async () => {
         porcentajeStore.set(0);
-        promiseImagenes = getImagenes();
+        imagenes = await getImagenes();
     });
-
-   
 </script>
 
-
-    {#await promiseImagenes}
-        <div class="d-flex divInicio justify-content-center align-items-center">
-            <Loading porcentaje={$porcentajeStore}></Loading>
-        </div>
-    {:then imagenes}
-    <div
+<div
     class="d-flex justify-content-center align-items-center flex-wrap vh-85 pt-2"
 >
-        {#each imagenes as { src }, i}
-            <VerFotos {src} />
+    {#if imagenes}
+        {#each imagenes as { src,imageFileFull }, i}
+            <VerFotos {src} {imageFileFull}/>
         {/each}
-    </div>
-    {/await}
-
+    {:else}
+        <Spinner
+            color="primary"
+            type="border"
+            size="lg"
+            style="width: 5rem; height: 5rem;"
+        />
+    {/if}
+</div>
 
 <style>
-    .divInicio {
-        height: 80vh;
-    }
 </style>
