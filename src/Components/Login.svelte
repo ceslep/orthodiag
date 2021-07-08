@@ -17,7 +17,7 @@
     import { onDestroy } from "svelte";
     import * as api from "$lib/api/apis";
     import { fade } from "svelte/transition";
-    import { goto } from '$app/navigation';
+    import { goto } from "$app/navigation";
     import Swal from "sweetalert2";
     let login = {
         usuario: "",
@@ -35,13 +35,14 @@
         unSubscribeSession();
     });
 
-    
-
     const ingresar = async () => {
         console.log($urlProcessImages);
-        const { response, json } = await api.post($urlProcessImages, 'login.php',login);
-         
-       
+        const { response, json } = await api.post(
+            $urlProcessImages,
+            "login.php",
+            login
+        );
+
         if (!json[0].concedido) {
             Swal.fire({
                 icon: "error",
@@ -57,10 +58,13 @@
         } else {
             session.iniciar(login.usuario);
             $usuario.usuario = login.usuario;
-            goto(`/dirs/${login.usuario}`).then(()=>{
-               console.log("success:");
-           });
-       
+            if (login.usuario != "admin") {
+                goto(`/dirs/${login.usuario}`).then(() => {
+                    console.log("success:");
+                });
+            } else {
+                goto("/admin");
+            }
         }
     };
 

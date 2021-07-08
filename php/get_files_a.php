@@ -10,7 +10,13 @@
 $files=array();
 foreach ($dir as $fileinfo) {
     if ($fileinfo->isDir() && !$fileinfo->isDot()) {
-		$files[]=array("atime"=>$fileinfo->getATime(),"mtime"=>$fileinfo->getMTime(),"directorio"=>utf8_encode($fileinfo->getFilename()));
+		chdir($path."/".$fileinfo->getFilename());
+		$filesc=glob("*.{jpg,png,gif,jpeg,JPG,PNG,GIF,JPEG}", GLOB_BRACE);
+		$filecount=0;
+		if( $filesc ) {
+			$filecount = count($filesc);
+		}
+		$files[]=array("atime"=>$fileinfo->getATime(),"mtime"=>$fileinfo->getMTime(),"directorio"=>utf8_encode($fileinfo->getFilename()),"cantidad"=>$filecount);
        
     }
 }

@@ -4,7 +4,7 @@
     import { urlProcessImages } from "../Stores.js";
 
     import { Spinner } from "sveltestrap";
-    import { AppIndicator } from "svelte-bootstrap-icons";
+    import { ArrowLeftSquare } from "svelte-bootstrap-icons";
     import * as api from "$lib/api/apis";
 
     let url = `${$urlProcessImages}get_files.php`;
@@ -33,7 +33,7 @@
 
 </script>
 
-<h1>Listado de Carpetas</h1>
+<a href="#!" on:click|preventDefault={()=>{history.back()}}><h2 class="mx-2"><ArrowLeftSquare style="font-size:2rem;"/>Listado de Carpetas</h2></a>
 <div class="d-flex justify-content-center align-items-center">
     <div class="divInicio">
        

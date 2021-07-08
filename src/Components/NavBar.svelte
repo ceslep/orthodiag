@@ -1,6 +1,4 @@
 <script lang="ts">
-    
-   
     import {
         Collapse,
         Navbar,
@@ -14,10 +12,10 @@
         DropdownMenu,
         DropdownItem,
     } from "sveltestrap";
-    import {onDestroy} from "svelte";
+    import { onDestroy, onMount } from "svelte";
     import { PersonCircle } from "svelte-bootstrap-icons";
-    import { session } from '../Stores.js';
-    
+    import { session } from "../Stores.js";
+    import { goto } from "$app/navigation";
 
     let isOpen = false;
 
@@ -26,17 +24,30 @@
     }
 
     let estado;
+    let hrefa = "/login";
 
-    
-    let unSubscribe=session.subscribe(value=>estado=value);
-   
-    
-   onDestroy(()=>{
-       unSubscribe();
-    
+    let unSubscribe = session.subscribe((value) => (estado = value));
+
+    onMount(() => {
+        // session.iniciar();
     });
 
-  
+    onDestroy(() => {
+        unSubscribe();
+    });
+
+    const iniciarCerrar = () => {
+        session.cerrar();
+        if (hrefa != "/login") {
+            goto("/").then(() => {
+                hrefa = "/login";
+                console.log(".......");
+            });
+        } else {
+            hrefa = "/cerrar";
+            goto("/login");
+        }
+    };
 </script>
 
 <Navbar color="info" light expand="md" class="sticky-top">
@@ -45,25 +56,25 @@
     <Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
         <Nav class="ms-auto" navbar>
             <NavItem>
-                <a href="/login" class="login"> 
+                <a
+                    href="#!"
+                    class="login"
+                    on:click|preventDefault={iniciarCerrar}
+                >
                     {estado.text}
-                    {#if estado.user!=""}
-                    <br/><small>{estado.user}</small>
+                    {#if estado.user != ""}
+                        <br /><small>{estado.user}</small>
                     {/if}
-                    <PersonCircle/>
+                    <PersonCircle />
                 </a>
             </NavItem>
         </Nav>
     </Collapse>
 </Navbar>
 
-
-
-
-
 <style>
-    .login{
-        text-decoration:none;
-        color:white;
+    .login {
+        text-decoration: none;
+        color: white;
     }
-    </style>
+</style>

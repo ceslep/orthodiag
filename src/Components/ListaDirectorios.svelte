@@ -9,7 +9,7 @@
         ListGroup,
         ListGroupItem,
     } from "sveltestrap";
-    import { urlProcessImages } from "../Stores.js";
+    import { urlProcessImages,urlProcessAssets } from "../Stores.js";
     import {onMount} from "svelte";
     import { goto } from '$app/navigation';
     import * as api from "$lib/api/apis";
@@ -29,7 +29,10 @@
     };
 
     onMount(async ()=>{
-        directorios = await listarDirectorios();
+        let directoriosPromise = await listarDirectorios();
+        directorios=directoriosPromise.filter(directorio=>{
+            return directorio.cantidad>0;
+        });
     });
 
   
@@ -43,12 +46,20 @@
 
 </script>
 
-    <h2>{directorio}</h2>
+    <h3 class="pt-3 text-wrap text-primary">{directorio}</h3>
+    <div class="py-3">
         <ListGroup>
          
                 {#if directorios}
                 {#each directorios as { directorio }, i}
-                    <ListGroupItem><a href="#!" on:click|preventDefault={()=>{verFotos(path,directorio)}}>{directorio}</a></ListGroupItem>
+                    <ListGroupItem><a 
+                        href="#!" on:click|preventDefault={()=>{verFotos(path,directorio)}}>
+                        <img 
+                        src="{$urlProcessAssets}folder.png" 
+                        class="img-thumbnail w-10"
+                        alt="">
+                        {directorio.replace(/\b\w/g, l => l.toUpperCase())}</a>
+                    </ListGroupItem>
                 {/each}
                 {:else}
                 <Spinner
@@ -60,4 +71,10 @@
             {/if}
           
         </ListGroup>
+    </div>
    
+<style>
+    .w-10{
+        width:4rem;
+    }
+</style>

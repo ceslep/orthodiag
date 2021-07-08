@@ -31,7 +31,8 @@ function createSession() {
         },
         cerrar: () => {
             let status={text:'Iniciar Sesión',user:''};
-            sessionStorage.setItem('status', JSON.stringify(status));
+            //sessionStorage.setItem('status', JSON.stringify(status));
+            window.sessionStorage.clear();
             set(status)
         }
 	};

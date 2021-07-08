@@ -33,7 +33,7 @@ $fileList = glob("*.*", GLOB_BRACE);
 
 	foreach($fileList as $filename){
 	if(is_file($filename)){
-         $files[]=array("directory"=>$path,"imageFile"=>$filename,"src"=>imgto64($path,$filename),"imageFileFull"=>substr($filename,1));
+         $files[]=array("directory"=>$path,"imageFile"=>$filename,"src"=>imgto64($path,$filename),"imageFileFull"=>substr($filename,1),"ext"=>strtoupper(pathinfo($filename, PATHINFO_EXTENSION)));
     }
 	}
 	$files=json_encode($files);

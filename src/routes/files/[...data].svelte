@@ -11,10 +11,11 @@
 </script>
 
 <script>
+    import { ArrowLeftSquare } from "svelte-bootstrap-icons";
     export let path;
     export let directorio;
 </script>
-
+<a href="#!" on:click|preventDefault={()=>{history.back()}}><h2 class="mx-2"><ArrowLeftSquare style="font-size:2rem;"/>Listado de Imágenes</h2></a>
 <Imagenes {path} dir={directorio}/>
 
 <slot/>
