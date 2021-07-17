@@ -4,6 +4,7 @@
     import { urlProcessImages } from "../../Stores";
     import { Table,Spinner } from "sveltestrap";
     import {CheckSquare,FileMinus,PersonX} from "svelte-bootstrap-icons";
+    import { createEventDispatcher } from 'svelte';
 
     let clientes = [];
     let clientesLocal=[];
@@ -37,6 +38,14 @@
     }
 
     $:busqueda(criterio);
+
+    const dispatch = createEventDispatcher();
+
+    const  editClick =(clientesLocal)=> {
+		dispatch('edit', {
+			data: clientesLocal
+		});
+	}
 </script>
 <div class="row pt-3 mx-10 px-3">
     <div class="col">
@@ -58,13 +67,13 @@
                 </tr>
             </thead>
             <tbody>
-                {#each clientesLocal as { identificacion, nombres, apellidos }, i}
+                {#each clientesLocal as cliente, i}
                     <tr>
                         <th scope="row">{i+1}</th>
-                        <td>{identificacion}</td>
-                        <td>{nombres}</td>
-                        <td>{apellidos}</td>
-                        <td><a href="#!"><CheckSquare class="text-success"/></a></td>
+                        <td>{cliente.identificacion}</td>
+                        <td>{cliente.nombres}</td>
+                        <td>{cliente.apellidos}</td>
+                        <td><a href="#!" on:click|preventDefault={()=>{editClick(cliente)}}><CheckSquare class="text-success"/></a></td>
                         <td><a href="#!"><PersonX class="text-danger"/></a></td>
                     </tr>
                 {/each}

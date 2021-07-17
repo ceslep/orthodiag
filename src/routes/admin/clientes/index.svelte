@@ -1,12 +1,11 @@
 <script>
     import ListadoClientes from "./../../../Components/admin/ListadoClientes.svelte";
     import FormClientes from "./../../../Components/admin/FormClientes.svelte";
-    import { Button, TabContent, TabPane } from "sveltestrap";
-    import { onMount } from "svelte";
+    import {Cliente} from "../../../Stores.js";
 
-    let status = "alpha";
+   
 
-    onMount(() => {});
+   
 
     const clk = (tab) => {
         if(document){
@@ -28,20 +27,18 @@
 
         }
     };
+
+    const edit = (event)=>{
+        
+        clk("creareditar")
+        $Cliente=event.detail.data;
+    }
 </script>
 
 <h1>Clientes</h1>
-<Button on:click={()=>{clk("creareditar")}}>Probar</Button>
-{status}
+
+
 <div class="container ">
-    <!--  <TabContent on:tab={e => status = e.detail}>
-        <TabPane tabId="alpha" tab="Listado" active >
-            <ListadoClientes />
-        </TabPane>
-        <TabPane tabId="bravo" tab="Crear/Editar">
-            <FormClientes />
-        </TabPane>
-    </TabContent>-->
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button
@@ -76,7 +73,7 @@
             role="tabpanel"
             aria-labelledby="listado-tab"
         >
-        <ListadoClientes /> 
+        <ListadoClientes on:edit={edit}/> 
         </div>
         <div
             class="tab-pane fade"

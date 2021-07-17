@@ -11,9 +11,10 @@ export const porcentajeStore = writable(0);
 //export const urlProcessImages = readable("http://192.168.100.10/odiag/php/");
 //export const urlProcessAssets = readable("http://192.168.100.10/odiag/assets/");
  
-export const urlProcessImages = writable("http://127.0.0.1/orthodiag/php/");
-export const urlProcessAssets = writable("http://127.0.0.1/orthodiag/static/");
+export const urlProcessImages = writable("http://127.0.0.1/orthodiag-1/php/");
+export const urlProcessAssets = writable("http://127.0.0.1/orthodiag-1/static/");
 export const imgStore = writable("");
+export const Cliente=writable({identificacion:""});
 
 
 function createSession() {
