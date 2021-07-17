@@ -1,6 +1,7 @@
 <script>
-    import { Form, FormGroup, FormText, Input, Label } from 'sveltestrap';
-    import {
+  import { Form, FormGroup, FormText, Input, Label } from "sveltestrap";
+  import {
+    Alert,
     Button,
     Card,
     CardBody,
@@ -8,81 +9,97 @@
     CardHeader,
     CardSubtitle,
     CardText,
-    CardTitle
-  } from 'sveltestrap';
-  import {PersonPlus} from "svelte-bootstrap-icons";  
-  import {Cliente} from "../../Stores.js";
-
-  var cliente;
+    CardTitle,
+    Spinner,
+  } from "sveltestrap";
+  import { PersonPlus } from "svelte-bootstrap-icons";
+  import { Cliente } from "../../Stores.js";
+  import * as api from "$lib/api/apis";
+  import { usuario, session, urlProcessImages } from "../../Stores";
   
 
-  $:cliente=$Cliente;
+  var cliente;
+  var clienteB="#";
 
-  const submitForm = (e)=>{
+  $: cliente = $Cliente;
+  $:clienteB=cliente.identificacion===""?clienteB="#":clienteB;
+  const submitForm = (e) => {
     e.preventDefault();
     console.log(cliente);
-  }
+  };
 
- 
- 
- const nuevoCliente = ()=>{
-   Object.keys(cliente).forEach(key=>{
-      cliente[key]='';
-   });
-   let elid=document.getElementById("identificacion");
-   console.log(elid);
-   elid.focus();  
- }
- 
+  const buscaClienteDB = async () => {
+    document.getElementById("spId").classList.remove("d-none");
+    const { response, json } = await api.post(
+      $urlProcessImages,
+      "buscaCliente.php",
+      cliente
+    );
+    clienteB=json[0].identificacion
+    document.getElementById("spId").classList.add("d-none");
+  };
+
+  const nuevoCliente = () => {
+    Object.keys(cliente).forEach((key) => {
+      cliente[key] = "";
+    });
+    let elid = document.getElementById("identificacion");
+    elid.focus();
+  };
 </script>
 
 <div class="container d-flex justify-content-center pt-3">
-    
-    <Card class="mb-3">
-        <CardHeader>
-          <div class="row">
-            <div class="col-9">
+  <Card class="mb-3" style="max-width:250px;">
+    <CardHeader>
+      <div class="row">
+        <div class="col-9">
           <CardTitle>Clientes</CardTitle>
         </div>
         <div class="col-2">
-          <Button size="sm" outline color="primary" on:click={nuevoCliente}><PersonPlus class="text-info"/></Button>
+          <Button size="sm" outline color="primary" on:click={nuevoCliente}
+            ><PersonPlus class="text-info" /></Button
+          >
         </div>
-        </div>
-        </CardHeader>
-        <CardBody>
-            <Form on:submit={submitForm}>
-                <input type="hidden" name="id" id="id" bind:value={cliente.id}>
-                <FormGroup>
-                    <Label for="identificacion">Identificacion</Label>
-                    <Input
-                      type="text"
-                      name="identificacion"
-                      id="identificacion"
-                      bind:value={cliente.identificacion}
-                   />
-                  </FormGroup>
-                  <FormGroup>
-                    <Label for="nombres">Nombres</Label>
-                    <Input
-                      type="text"
-                      name="nombres"
-                      id="nombres"
-                      bind:value={cliente.nombres}
-                       />
-                  </FormGroup>
-                  <FormGroup>
-                    <Label for="apellidos">Apellidos</Label>
-                    <Input
-                      type="text"
-                      name="apellidos"
-                      id="apellidos"
-                      bind:value={cliente.apellidos}
-                       />
-                  </FormGroup>
-                  <Button block outline color="success">Guardar</Button>
-            </Form>    
-        </CardBody>
-        <CardFooter></CardFooter>
-      </Card>
-    
+      </div>
+    </CardHeader>
+    <CardBody>
+      <Form on:submit={submitForm}>
+        <input type="hidden" name="id" id="id" bind:value={cliente.id} />
+        <FormGroup>
+          <Label for="identificacion">Identificacion</Label>
+          <Input
+            type="text"
+            name="identificacion"
+            id="identificacion"
+            bind:value={cliente.identificacion}
+            on:blur={buscaClienteDB}
+          />
+          <Spinner id="spId" size="sm" color="success" class="d-none" />
+          <Alert color="warning" class={cliente.identificacion===clienteB?"":"d-none"}>
+            <h6>Ya existe un cliente con ésta identificación</h6>
+          </Alert>
+        </FormGroup>
+        <FormGroup>
+          <Label for="nombres">Nombres</Label>
+          <Input
+            type="text"
+            name="nombres"
+            id="nombres"
+            bind:value={cliente.nombres}
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="apellidos">Apellidos</Label>
+          <Input
+            type="text"
+            name="apellidos"
+            id="apellidos"
+            bind:value={cliente.apellidos}
+          />
+        </FormGroup>
+        <Button block outline color="success">Guardar</Button>
+      </Form>
+    </CardBody>
+    <CardFooter />
+  </Card>
 </div>

@@ -23,11 +23,11 @@ async function send({
   const opts: any = { method, headers: {} };
 
   if (data) {
-   
+
     if (!data.type) {
       opts.headers['Content-Type'] = 'application/json';
       opts.body = JSON.stringify(data);
-      opts.mode='cors';
+      opts.mode = 'cors';
     } else if (data.type === 'formData') {
       // TODO: refactor this to work better for file uploads
       const formData = new FormData();
@@ -38,19 +38,30 @@ async function send({
     }
   }
 
-  
+
 
   const fullPath: string = encodeURI(`${base}/${path}`);
   if (import.meta.env.VITE_DEBUG_MODE) {
     console.log(method, fullPath);
     console.log(opts);
   }
-  const response = await fetch(fullPath, opts);
-  const json: any = await response.json();
-  if (import.meta.env.VITE_DEBUG_MODE) {
-    console.log('DEBUG:', json);
+  let response ;
+  let json:any;
+  try {
+    response = await fetch(fullPath, opts);
+    console.log(response);
+    if (!response.ok) throw Error(response.status);
+    json  = await response.json();
+    if (import.meta.env.VITE_DEBUG_MODE) {
+      console.log('DEBUG:', json);
+    }
+    return { response, json };
   }
-  return { response, json };
+  catch (error) {
+    console.log(error);
+    json=[{'mensaje':'error','TypedError':error,'url':fullPath}];
+    return {response, json };
+  }
 }
 
 /*
@@ -59,7 +70,7 @@ async function send({
 export function get(
   base: string,
   path: string,
- 
+
 ): Promise<{
   response: any;
   json: any;
@@ -71,7 +82,7 @@ export function del(
   base: string,
   path: string,
   data: any,
- 
+
 ): Promise<{
   response: any;
   json: any;
@@ -83,19 +94,19 @@ export function post(
   base: string,
   path: string,
   data: any,
-  
+
 ): Promise<{
   response: any;
   json: any;
 }> {
-  return send({ method: 'POST', path, data,  base });
+  return send({ method: 'POST', path, data, base });
 }
 
 export function put(
   base: string,
   path: string,
   data: any,
-  
+
 ): Promise<{
   response: any;
   json: any;

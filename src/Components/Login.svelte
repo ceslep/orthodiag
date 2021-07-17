@@ -11,6 +11,7 @@
         FormGroup,
         Label,
         Input,
+        Spinner,
     } from "sveltestrap";
 
     import { usuario, session, urlProcessImages } from "../Stores.js";
@@ -37,16 +38,20 @@
 
     const ingresar = async () => {
         console.log($urlProcessImages);
+        document.getElementById("spinner").classList.remove("d-none");
         const { response, json } = await api.post(
             $urlProcessImages,
             "login.php",
             login
         );
-
+        console.log(json);
+        document.getElementById("spinner").classList.add("d-none");
+        let mensaje="Acceso denegado";
+        if (json[0].mensaje) mensaje=json[0].TypedError+" "+json[0].url;
         if (!json[0].concedido) {
             Swal.fire({
                 icon: "error",
-                title: "Acceso denegado",
+                title: mensaje,
                 text: "Error!",
                 showClass: {
                     popup: "animate__animated animate__fadeInDown",
@@ -98,7 +103,7 @@
                     placeholder="Ingrese su contraseña"
                 />
             </FormGroup>
-            <Button block color="primary" on:click={ingresar}>Ingresar</Button>
+            <Button block color="primary" on:click={ingresar}>Ingresar <Spinner id="spinner" class="d-none" size="sm" /></Button>
         </CardBody>
         <CardFooter>&#169;{cpr}</CardFooter>
     </Card>
@@ -108,4 +113,6 @@
     .divInicio {
         height: 80vh;
     }
+
+    
 </style>
