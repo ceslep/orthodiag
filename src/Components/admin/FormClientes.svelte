@@ -16,16 +16,47 @@
   import { Cliente } from "../../Stores.js";
   import * as api from "$lib/api/apis";
   import { usuario, session, urlProcessImages } from "../../Stores";
+import Swal from "sweetalert2";
   
 
   var cliente;
   var clienteB="#";
+  let saving=false;
+  let existe=false;
+  let btn;
 
   $: cliente = $Cliente;
-  $:clienteB=cliente.identificacion===""?clienteB="#":clienteB;
-  const submitForm = (e) => {
+  $:if(cliente.identificacion===""){
+    clienteB="#";
+    existe=false;
+  } else if (cliente.identificacion===clienteB){
+    clienteB=cliente.identificacion;
+    existe=true
+  };
+  $:if (existe) {
+    if (btn) btn.classList.add("disabled"); 
+    
+  }else{
+    if (btn)  btn.classList.remove("disabled");
+  }
+    
+
+  const submitForm = async (e) => {
     e.preventDefault();
-    console.log(cliente);
+    saving=true;
+    try{
+    const {response,json} = await api.post($urlProcessImages,"guardarCliente.php",cliente);
+    if (response.status===200) 
+      Swal.fire("Almacenado correctamente");
+    }
+    catch(error){
+      console.log(error);
+    }
+    finally{
+      saving=false;
+     
+
+    }
   };
 
   const buscaClienteDB = async () => {
@@ -37,6 +68,7 @@
     );
     clienteB=json[0].identificacion
     document.getElementById("spId").classList.add("d-none");
+    
   };
 
   const nuevoCliente = () => {
@@ -73,6 +105,7 @@
             id="identificacion"
             bind:value={cliente.identificacion}
             on:blur={buscaClienteDB}
+            autocomplete="off"
           />
           <Spinner id="spId" size="sm" color="success" class="d-none" />
           <Alert color="warning" class={cliente.identificacion===clienteB?"":"d-none"}>
@@ -86,6 +119,7 @@
             name="nombres"
             id="nombres"
             bind:value={cliente.nombres}
+        
           />
         </FormGroup>
         <FormGroup>
@@ -95,11 +129,18 @@
             name="apellidos"
             id="apellidos"
             bind:value={cliente.apellidos}
+        
           />
         </FormGroup>
-        <Button block outline color="success">Guardar</Button>
+        <div class="d-grid gap-1">
+        <button class="btn btn-success btn-block" bind:this={btn}>
+          Guardar
+          <Spinner size="sm" class="{!saving?'d-none':''}"/>
+        </button>
+      </div>
       </Form>
     </CardBody>
     <CardFooter />
   </Card>
 </div>
+

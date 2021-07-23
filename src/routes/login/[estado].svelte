@@ -22,7 +22,7 @@
 <script>
 
 
-    export let data;
+   
 
     onMount(()=>{
 
