@@ -1,18 +1,27 @@
 <script>
-    import { onMount } from "svelte";
+    import { onMount,afterUpdate } from "svelte";
     import * as api from "$lib/api/apis";
-    import { urlProcessImages } from "../../Stores";
+    import { urlProcessImages,UpdateC } from "../../Stores";
     import { Table,Spinner } from "sveltestrap";
     import {CheckSquare,FileMinus,PersonX} from "svelte-bootstrap-icons";
     import { createEventDispatcher } from 'svelte';
 
+    export let update;
     let clientes = [];
     let clientesLocal=[];
     let criterio='';
-    onMount(async () => {
+
+    const lstClientes = async ()=>{
         clientes = await getClientes();
         clientesLocal=clientes;
+    }
+
+    onMount(lstClientes);
+    afterUpdate(()=>{
+        console.log('updated listado')
     });
+
+    
     const getClientes = async () => {
         const { response, json } = await api.get(
             $urlProcessImages,
@@ -38,6 +47,10 @@
     }
 
     $:busqueda(criterio);
+
+    $:if($UpdateC) lstClientes();
+
+    $:if(update) lstClientes();
 
     const dispatch = createEventDispatcher();
 

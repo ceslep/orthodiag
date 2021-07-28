@@ -1,8 +1,11 @@
 <script>
     import ListadoClientes from "./../../../Components/admin/ListadoClientes.svelte";
     import FormClientes from "./../../../Components/admin/FormClientes.svelte";
-    import { Cliente } from "../../../Stores.js";
+    import { Cliente,  urlProcessImages } from "../../../Stores.js";
     import Swal from "sweetalert2"
+    import * as api from "$lib/api/apis";
+
+    let update=false;
 
     const clk = (tab) => {
         if (document) {
@@ -30,6 +33,13 @@
         $Cliente = event.detail.data;
     };
 
+    const eliminarCliente = async ()=>{
+
+        let {response,json} = await api.del($urlProcessImages,"borrarCliente.php",$Cliente);
+        return json;
+
+    }
+
     const deleteCliente = async (event) => {
         console.log(event.detail.data);
         $Cliente = event.detail.data;
@@ -43,7 +53,12 @@
             confirmButtonText: "Si, Borrarlo!",
         })
             if (result.isConfirmed) {
-                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+                await eliminarCliente();
+                //$UpdateC=true;
+                update=true;
+                await Swal.fire("Borrado!", "El registro ha sido eliminado.", "success");
+                update=false;
+                //$UpdateC=false;
             }
         
     };
@@ -85,7 +100,7 @@
             role="tabpanel"
             aria-labelledby="listado-tab"
         >
-            <ListadoClientes on:edit={edit} on:delete={deleteCliente} />
+            <ListadoClientes on:edit={edit} on:delete={deleteCliente} update={update}/>
         </div>
         <div
             class="tab-pane fade"

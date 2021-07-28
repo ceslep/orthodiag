@@ -13,7 +13,7 @@
     Spinner,
   } from "sveltestrap";
   import { PersonPlus } from "svelte-bootstrap-icons";
-  import { Cliente } from "../../Stores.js";
+  import { Cliente, UpdateC } from "../../Stores.js";
   import * as api from "$lib/api/apis";
   import { usuario, session, urlProcessImages } from "../../Stores";
   import Swal from "sweetalert2";
@@ -47,7 +47,9 @@
         "guardarCliente.php",
         cliente
       );
-      if (response.status === 200) Swal.fire("Almacenado correctamente");
+      $UpdateC=true;
+      if (response.status === 200) await Swal.fire("Almacenado correctamente");
+      $UpdateC=false;
     } catch (error) {
       console.log(error);
     } finally {

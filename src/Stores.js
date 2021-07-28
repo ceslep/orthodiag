@@ -20,6 +20,7 @@ export const urlProcessAssets = writable("http://127.0.0.1/orthodiag-1/static/")
 export const imgStore = writable("");
 export const Cliente=writable({identificacion:""});
 
+export const UpdateC = writable(false);
 
 function createSession() {
 	const { subscribe, set } = writable({text:'Iniciar Sesión',user:''});
