@@ -1,42 +1,55 @@
 <script>
     import ListadoClientes from "./../../../Components/admin/ListadoClientes.svelte";
     import FormClientes from "./../../../Components/admin/FormClientes.svelte";
-    import {Cliente} from "../../../Stores.js";
-
-   
-
-   
+    import { Cliente } from "../../../Stores.js";
+    import Swal from "sweetalert2"
 
     const clk = (tab) => {
-        if(document){
-        var navLink=document.querySelectorAll(".nav-link");
-        navLink.forEach(nav=>{
-            nav.classList.remove("active");
-        });    
-        var tabContent = document.querySelector('.tab-content');
-        const tabPane= tabContent.querySelectorAll(".tab-pane");
-        
-        tabPane.forEach(t=>{
-            t.classList.remove("show");
-            t.classList.remove("active");
-          
-        });
-        document.querySelector(`[data-bs-target="#${tab}"]`).classList.add("active");
-        document.getElementById(tab).classList.add("show");
-        document.getElementById(tab).classList.add("active");
+        if (document) {
+            var navLink = document.querySelectorAll(".nav-link");
+            navLink.forEach((nav) => {
+                nav.classList.remove("active");
+            });
+            var tabContent = document.querySelector(".tab-content");
+            const tabPane = tabContent.querySelectorAll(".tab-pane");
 
+            tabPane.forEach((t) => {
+                t.classList.remove("show");
+                t.classList.remove("active");
+            });
+            document
+                .querySelector(`[data-bs-target="#${tab}"]`)
+                .classList.add("active");
+            document.getElementById(tab).classList.add("show");
+            document.getElementById(tab).classList.add("active");
         }
     };
 
-    const edit = (event)=>{
+    const edit = (event) => {
+        clk("creareditar");
+        $Cliente = event.detail.data;
+    };
+
+    const deleteCliente = async (event) => {
+        console.log(event.detail.data);
+        $Cliente = event.detail.data;
+        let result = await Swal.fire({
+            title: "Está Seguro?",
+            text: "Esta eliminación no se puede revertir",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, Borrarlo!",
+        })
+            if (result.isConfirmed) {
+                Swal.fire("Deleted!", "Your file has been deleted.", "success");
+            }
         
-        clk("creareditar")
-        $Cliente=event.detail.data;
-    }
+    };
 </script>
 
 <h1>Clientes</h1>
-
 
 <div class="container ">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -64,7 +77,6 @@
                 aria-selected="false">Crear/Editar</button
             >
         </li>
-        
     </ul>
     <div class="tab-content" id="myTabContent">
         <div
@@ -73,7 +85,7 @@
             role="tabpanel"
             aria-labelledby="listado-tab"
         >
-        <ListadoClientes on:edit={edit}/> 
+            <ListadoClientes on:edit={edit} on:delete={deleteCliente} />
         </div>
         <div
             class="tab-pane fade"
@@ -81,9 +93,8 @@
             role="tabpanel"
             aria-labelledby="creareditar-tab"
         >
-        <FormClientes />  
+            <FormClientes />
         </div>
-        
     </div>
 </div>
 <slot />

@@ -46,6 +46,12 @@
 			data: clientesLocal
 		});
 	}
+
+    const  deleteClick =(clientesLocal)=> {
+		dispatch('delete', {
+			data: clientesLocal
+		});
+	}
 </script>
 <div class="row pt-3 mx-10 px-3">
     <div class="col">
@@ -74,7 +80,7 @@
                         <td>{cliente.nombres}</td>
                         <td>{cliente.apellidos}</td>
                         <td><a href="#!" on:click|preventDefault={()=>{editClick(cliente)}}><CheckSquare class="text-success"/></a></td>
-                        <td><a href="#!"><PersonX class="text-danger"/></a></td>
+                        <td><a href="#!" on:click|preventDefault={()=>{deleteClick(cliente)}}><PersonX class="text-danger"/></a></td>
                     </tr>
                 {/each}
             </tbody>

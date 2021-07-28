@@ -16,46 +16,42 @@
   import { Cliente } from "../../Stores.js";
   import * as api from "$lib/api/apis";
   import { usuario, session, urlProcessImages } from "../../Stores";
-import Swal from "sweetalert2";
-  
+  import Swal from "sweetalert2";
 
   var cliente;
-  var clienteB="#";
-  let saving=false;
-  let existe=false;
+  var clienteB = "#";
+  let saving = false;
+  let existe = false;
   let btn;
 
   $: cliente = $Cliente;
-  $:if(cliente.identificacion===""){
-    clienteB="#";
-    existe=false;
-  } else if (cliente.identificacion===clienteB){
-    clienteB=cliente.identificacion;
-    existe=true
-  };
-  $:if (existe) {
-    if (btn) btn.classList.add("disabled"); 
-    
-  }else{
-    if (btn)  btn.classList.remove("disabled");
+  $: if (cliente.identificacion === "") {
+    clienteB = "#";
+    existe = false;
+  } else if (cliente.identificacion === clienteB) {
+    clienteB = cliente.identificacion;
+    existe = true;
   }
-    
+  $: if (existe) {
+    if (btn) btn.classList.add("disabled");
+  } else {
+    if (btn) btn.classList.remove("disabled");
+  }
 
   const submitForm = async (e) => {
     e.preventDefault();
-    saving=true;
-    try{
-    const {response,json} = await api.post($urlProcessImages,"guardarCliente.php",cliente);
-    if (response.status===200) 
-      Swal.fire("Almacenado correctamente");
-    }
-    catch(error){
+    saving = true;
+    try {
+      const { response, json } = await api.post(
+        $urlProcessImages,
+        "guardarCliente.php",
+        cliente
+      );
+      if (response.status === 200) Swal.fire("Almacenado correctamente");
+    } catch (error) {
       console.log(error);
-    }
-    finally{
-      saving=false;
-     
-
+    } finally {
+      saving = false;
     }
   };
 
@@ -66,9 +62,8 @@ import Swal from "sweetalert2";
       "buscaCliente.php",
       cliente
     );
-    clienteB=json[0].identificacion
+    clienteB = json[0].identificacion;
     document.getElementById("spId").classList.add("d-none");
-    
   };
 
   const nuevoCliente = () => {
@@ -108,7 +103,10 @@ import Swal from "sweetalert2";
             autocomplete="off"
           />
           <Spinner id="spId" size="sm" color="success" class="d-none" />
-          <Alert color="warning" class={cliente.identificacion===clienteB?"":"d-none"}>
+          <Alert
+            color="warning"
+            class={cliente.identificacion === clienteB ? "" : "d-none"}
+          >
             <h6>Ya existe un cliente con ésta identificación</h6>
           </Alert>
         </FormGroup>
@@ -119,7 +117,6 @@ import Swal from "sweetalert2";
             name="nombres"
             id="nombres"
             bind:value={cliente.nombres}
-        
           />
         </FormGroup>
         <FormGroup>
@@ -129,18 +126,16 @@ import Swal from "sweetalert2";
             name="apellidos"
             id="apellidos"
             bind:value={cliente.apellidos}
-        
           />
         </FormGroup>
         <div class="d-grid gap-1">
-        <button class="btn btn-success btn-block" bind:this={btn}>
-          Guardar
-          <Spinner size="sm" class="{!saving?'d-none':''}"/>
-        </button>
-      </div>
+          <button class="btn btn-success btn-block" bind:this={btn}>
+            Guardar
+            <Spinner size="sm" class={!saving ? "d-none" : ""} />
+          </button>
+        </div>
       </Form>
     </CardBody>
     <CardFooter />
   </Card>
 </div>
-
